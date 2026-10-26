@@ -39,10 +39,13 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
-
-
+This project trains a text classifier on the posts and labels in
+`data/Suicide_Detection.csv`. It sorts posts into the dataset's two categories:
+`suicide` and `non-suicide`; the file has 116,037 examples of each. The
+candidate distinction is whether a post expresses or reports suicide-related
+thoughts or threats, versus describing distress or everyday topics without a
+clear suicide-related signal. These are labels in this dataset, not a diagnosis
+or a reliable judgment about whether someone is in immediate danger.
 
 ---
 
@@ -54,33 +57,46 @@
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `suicide`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** A post the dataset labels `suicide`. Observable cues include
+first-person suicidal thoughts or a report that someone else is threatening
+suicide. The label also includes less explicit distress, so distress alone
+does not establish intent.
 
 **Example 1:**
->
+> “she began threatening suicide”
 
 **Example 2:**
->
+> “i need help just help me im crying so hard” — a distress signal without an
+> explicit mention of suicide, which makes this a less clear example.
+
+### `non-suicide`
+
+**Definition:** A post the dataset labels `non-suicide`. Examples include
+everyday complaints, social questions, and emotional reactions that do not
+describe or report a suicide-related thought or threat. Negative tone by itself
+is not enough to distinguish the labels.
+
+**Example 1:**
+> “I don't get affected by compliments if it's coming from someone I know irl
+> but I feel really good when internet strangers do it”
+
+**Example 2:**
+> “Finally 2020 is almost over... So I can never hear ‘2020 has been a bad
+> year’ ever again.”
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `suicide` and `non-suicide`
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+**The decision rule I used every time:** I look for text that describes or
+reports suicidal thoughts or a suicide threat, rather than using sadness,
+loneliness, profanity, or “I need help” alone as a deciding cue. A post about
+another person making a suicide threat still has a concrete suicide-related
+signal. Vague distress is the hardest case: the dataset labels at least one
+such post `suicide` without spelling out why, so I treat that as an ambiguity
+in the examples, not proof of the writer's intent.
 
 
 
