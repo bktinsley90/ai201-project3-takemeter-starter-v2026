@@ -107,19 +107,17 @@ in the examples, not proof of the writer's intent.
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** A random sample (seed 42) of 250 posts from the public Suicide Detection CSV (`data/Suicide_Detection.csv`, 232,074 posts, kept out of git because of its size). Only posts of 40–1,200 characters were eligible. The sample is saved as `labels.csv`.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** I did not label these myself. The labels are the source dataset's original `suicide` / `non-suicide` labels; I have not yet re-read and corrected them.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `suicide` | 125 | 50% |
+| `non-suicide` | 125 | 50% |
+| **Total** | 250 | 100% |
 
 **Three hard cases**
 
