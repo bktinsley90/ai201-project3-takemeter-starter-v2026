@@ -53,61 +53,51 @@ whether you hit them:
 
 ## 1.
 
-<!-- Your criterion. It must name a number. -->
-
-
+Overall accuracy is at least 0.85 on the held-out test set, on every one of the three seeds (42, 7, 2024).
 
 **Why this target:**
 
-
+With two balanced labels a coin-flip guesser gets 50%, so 0.85 means it is wrong on fewer than 1 post in 6. I'm not aiming higher because I only have 250 posts (about 175 for training), and the source labels are noisy: some `suicide` posts never mention suicide, and the third-party posts are labelled inconsistently. The test split is only about 38 posts, so one post is worth about 2.6 points of accuracy; a seed-to-seed swing of 5 points is normal, and I'd call 0.85 a fair bar to clear each time.
 
 ---
 
 ## 2.
 
-<!-- Your criterion. -->
-
-
+Both labels have an F1 of at least 0.80 on every seed: `suicide` >= 0.80 and `non-suicide` >= 0.80.
 
 **Why this target:**
 
-
+The labels are balanced (125 each), so there is no small label to excuse one side being much worse. About 19 test posts per label means F1 will move a few points between seeds, so I set this 5 points under my accuracy target instead of matching it. If the model gets 0.85 overall by being good at the everyday posts and bad at the suicide-related ones, criterion 1 would hide that and this one would catch it.
 
 ---
 
 ## 3.
 
-<!-- Your criterion. -->
-
-
+Recall for `suicide` is at least 0.85 on every seed: of the real `suicide` posts in the test split, the model finds at least 85%.
 
 **Why this target:**
 
-
+In a tool that flags posts for a person to look at, missing a real `suicide` post is the worse mistake, and a false alarm is the cheaper one. So I want recall held higher than overall accuracy and I'm willing to accept lower precision. With about 19 `suicide` posts in test, 0.85 means missing at most 2. A recall of 0.80 would allow 4 misses, which I wouldn't call useful.
 
 ---
 
 ## 4.
 
-<!-- Your criterion. -->
-
-
+When the model's confidence is 0.90 or higher, at least 0.90 of those predictions are correct, on every seed. At least 40% of test posts must reach that confidence level, so the criterion can't be met by the model never being confident.
 
 **Why this target:**
 
-
+A confident prediction should be right more often than the average one, otherwise the confidence score tells me nothing about which posts to trust. I set the bar at 0.90, above the 0.85 overall target, because that gap is the whole point of a confidence score. The 40% floor stops me passing by technicality when only 3 or 4 posts clear 0.90.
 
 ---
 
 ## 5.
 
-<!-- Your criterion. -->
-
-
+My agreement with the staff set (`python agreement.py`) is at least 24 of 30 (80%).
 
 **Why this target:**
 
-
+I found in this dataset that the source labels don't consistently follow even my own rule (third-party posts go both ways). If I can't apply a written rule consistently, no model can learn it. 80% is deliberately above what I'd expect from a coin flip and below perfect: the staff set was chosen to include ambiguous posts, so I expect some honest disagreements. Falling below it would tell me my labelling is the problem, not the model. Note this one is measured once, not across seeds.
 
 ---
 
