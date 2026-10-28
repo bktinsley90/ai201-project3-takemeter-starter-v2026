@@ -22,21 +22,6 @@
 > **The rest of this file is your submission.** Fill it in as you go.
 
 ---
-
-<!-- ─────────────────────────────────────────────────────────────────────────
-     HOW TO USE THIS FILE
-
-     Unit 5 asks for the first five sections. Unit 6 adds the five below them.
-
-     Everything is pasted as TEXT. No screenshots, no images.
-
-     ⚠️ The confusion matrix especially. The notebook prints one as a markdown
-     table, ready to copy. A screenshot of a matrix earns nothing. Paste the
-     table.
-     ───────────────────────────────────────────────────────────────────────── -->
-
-<!-- ═══════════════════════ UNIT 5 — THE BUILD ═══════════════════════ -->
-
 ## What This Does
 
 This project trains a text classifier on Reddit-style posts from the public
@@ -145,17 +130,13 @@ correcting it silently.
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`, a small pretrained English text model that I fine-tune to sort posts into `suicide` and `non-suicide`.
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, seed 42, max length 128 tokens. Trained on Apple Silicon GPU (MPS).
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** Nothing. I used the notebook's defaults as given. The max length of 128 tokens means longer posts are cut off, so the model may not see the end of them.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
-
-
+**Split sizes:** The notebook splits 70/15/15, stratified by label: 174 train / 38 validation / 38 test (250 posts). The test split has 19 `suicide` and 19 `non-suicide`. Both labels are above the roughly 8-per-label warning level, but 19 is still small: one post is about 2.6 points of accuracy (5 points of per-label recall), so scores will move between seeds.
 
 ---
 
@@ -168,19 +149,19 @@ of next unit's variance. -->
      workflow and disclosing it costs you nothing. Not disclosing it is the
      problem. -->
 
-**Moment 1**
+**Moment 1: the Training Run section**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked the AI to fill in the Training Run section and told it I had not changed any defaults.
+- *What came back:* It read the settings from `takemeter.ipynb` (`distilbert-base-uncased`, 3 epochs, learning rate 2e-5, batch size 16, seed 42, max length 128) and the test split from `test_split.csv` and `results.json` (38 posts, 19 per label). It also noted that posts over 128 tokens are cut off, and that 19 test posts per label is small enough for scores to jump between seeds.
+- *What I changed:* I checked the settings against my own run. The 174 / 38 train and validation sizes were worked out by the AI from the notebook's 70/15/15 rule, not read from a run output, so I confirmed them against what my notebook printed.
 
-**Moment 2**
+**Moment 2: the Label Taxonomy**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked the AI to double-check my Label Taxonomy against the assignment's description of a strong taxonomy.
+- *What came back:* It found that my definitions were circular ("a post the dataset labels X"), that one `suicide` example had no suicide content in it, and that my decision rule contradicted the data (a post about a friend's suicide threat was labelled `non-suicide`). It rewrote the taxonomy around one checkable rule: label by what the writer says about *themselves*. It also flagged where the source labels break that rule.
+- *What I changed:* I reviewed the rewritten rule against 20 posts I labelled cold, and changed 2 of the source labels from `suicide` to `non-suicide` under it. Both are written up in the hard cases.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** Yes, most of the dataset was pre-labelled. The AI drew a random sample of 250 posts (seed 42) from the Suicide Detection CSV and wrote them to `labels.csv` with the source dataset's labels already attached. I labelled 20 of them cold (10 per label) and changed 2 of those. The other 230 are marked `pre-label` in the `note` column. I have not re-read those 230, so they still carry the source dataset's labels, including the inconsistencies described in the taxonomy.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
