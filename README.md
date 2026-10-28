@@ -39,65 +39,64 @@
 
 ## What This Does
 
-This project trains a text classifier on the posts and labels in
-`data/Suicide_Detection.csv`. It sorts posts into the dataset's two categories:
-`suicide` and `non-suicide`; the file has 116,037 examples of each. The
-candidate distinction is whether a post expresses or reports suicide-related
-thoughts or threats, versus describing distress or everyday topics without a
-clear suicide-related signal. These are labels in this dataset, not a diagnosis
-or a reliable judgment about whether someone is in immediate danger.
+This project trains a text classifier on Reddit-style posts from the public
+Suicide Detection dataset (`data/Suicide_Detection.csv`; I use a 250-post
+sample in `labels.csv`). It sorts each post into `suicide` or `non-suicide`.
+The distinction I can point at is whether the writer says, about themselves,
+that they want to die, want to kill themselves, or have a plan. These are the
+dataset's labels, not a diagnosis or a judgment of anyone's immediate danger.
 
 ---
 
 ## Label Taxonomy
 
-<!-- Each label: a one-sentence definition and two real examples from your
-     reading. Then your decision rule for the hardest boundary.
-
-     The decision rule is worth a point on its own and it's the thing most
-     people leave out. Every taxonomy has a hardest boundary. Name yours. -->
-
 ### `suicide`
 
-**Definition:** A post the dataset labels `suicide`. Observable cues include
-first-person suicidal thoughts or a report that someone else is threatening
-suicide. The label also includes less explicit distress, so distress alone
-does not establish intent.
+**Definition:** The writer states their own wish to die, urge to kill
+themselves, or plan or date for doing so.
 
 **Example 1:**
-> “she began threatening suicide”
+> "badly want to kill myselfI've been thinking about it for months now and i
+> guess im just saving up the courage to do it."
 
 **Example 2:**
-> “i need help just help me im crying so hard” — a distress signal without an
-> explicit mention of suicide, which makes this a less clear example.
+> "I plan on taking my life on 7/12/15, i'm tired of living."
 
 ### `non-suicide`
 
-**Definition:** A post the dataset labels `non-suicide`. Examples include
-everyday complaints, social questions, and emotional reactions that do not
-describe or report a suicide-related thought or threat. Negative tone by itself
-is not enough to distinguish the labels.
+**Definition:** The writer makes no statement of their own suicidal wish,
+urge, or plan; the post is about something else, or about someone else.
 
 **Example 1:**
-> “I don't get affected by compliments if it's coming from someone I know irl
-> but I feel really good when internet strangers do it”
+> "Time to clean my room 😔 Wish me luck, it's gonna take an effort. Be back
+> in a bit"
 
 **Example 2:**
-> “Finally 2020 is almost over... So I can never hear ‘2020 has been a bad
-> year’ ever again.”
+> "Star Wars music somehow helps me focus when studying/doing homework"
 
 ### The hardest boundary
 
 **Which two labels:** `suicide` and `non-suicide`
 
-**The decision rule I used every time:** I look for text that describes or
-reports suicidal thoughts or a suicide threat, rather than using sadness,
-loneliness, profanity, or “I need help” alone as a deciding cue. A post about
-another person making a suicide threat still has a concrete suicide-related
-signal. Vague distress is the hardest case: the dataset labels at least one
-such post `suicide` without spelling out why, so I treat that as an ambiguity
-in the examples, not proof of the writer's intent.
+**The post that sits between them:**
+> "My Friend Is Dying My friend swears she's going to kill herself before 21.
+> Her mental state is terrible. ... I'm scared for her tbh."
 
+It is full of suicide content, but the writer is describing a friend.
+
+**The decision rule I used every time:** Label by what the writer says about
+*themselves*. A first-person wish, urge, or plan is `suicide`. Suicide talk
+about someone else (a friend, an ex, a family member) is `non-suicide`, however
+serious.
+
+**Where the source labels break this rule:** The dataset is not consistent here.
+The friend post above is `non-suicide`, but "My friends mum is preventing him
+from getting help ... edging closer and closer to suicide" is labelled
+`suicide`. Some `suicide` posts also never mention suicide at all, e.g. "Does
+anyone else think if you met yourself as a separate person, that you would kind
+of hate yourself?" and "i need help just help me im crying so hard". Where the
+source label disagrees with my rule, I'm recording it as label noise, not
+correcting it silently.
 
 
 ---
