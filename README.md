@@ -103,46 +103,41 @@ correcting it silently.
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
 
 **Where the posts came from:** A random sample (seed 42) of 250 posts from the public Suicide Detection CSV (`data/Suicide_Detection.csv`, 232,074 posts, kept out of git because of its size). Only posts of 40–1,200 characters were eligible. The sample is saved as `labels.csv`.
 
-**How I labelled them:** I did not label these myself. The labels are the source dataset's original `suicide` / `non-suicide` labels; I have not yet re-read and corrected them.
+**How I labelled them:** Mixed, and the `note` column in `labels.csv` says which is which. For 20 posts (10 per label, chosen at random) I read the post and labelled it myself, cold, before looking at the dataset's label; these are marked `cold`. I changed 2 of those 20 away from the dataset's label, both from `suicide` to `non-suicide`, because the writer was not stating a wish to die under my first-person rule. The other 230 posts keep the dataset's original `suicide` / `non-suicide` label, which I treated as a pre-label and have not re-read; these are marked `pre-label`. So most labels here are the source's, not mine, and the cold set is the only part I can vouch for.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-| `suicide` | 125 | 50% |
-| `non-suicide` | 125 | 50% |
+| `suicide` | 123 | 49.2% |
+| `non-suicide` | 127 | 50.8% |
 | **Total** | 250 | 100% |
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* "I hurt so much. And I'm not allowed to show it. ... My chest physically hurts from how unhappy I am. I've cried myself to sleep almost every night for the past ten years. Im so tired of it all. ... I just want it to be over. I want to go away and sleep. Help me. Please help me."
 >
-> *Could have been:*
+> *Could have been:* `suicide` (the source label) or `non-suicide`.
 >
-> *I chose, because:*
+> *I chose:* `non-suicide`, because the post never says the writer wants to die or to kill themselves. "Over" and "go away and sleep" could mean that, or just wanting the exhaustion to stop. My first-person rule needs an explicit wish, urge or plan, and this has none. It is the closest call of the three, since the wording can be read either way.
 
 **2.**
-> *The post:*
+> *The post:* "I feel so useless. I just feel like nobody likes me. I've never felt this suicidal in several months. Idk what's happened. All I have is my service dog. Still, I feel no point in life. No future. It can only get worse from here. ... I just want to vent in real life."
 >
-> *Could have been:*
+> *Could have been:* `suicide` (the source label) or `non-suicide`.
 >
-> *I chose, because:*
+> *I chose:* `non-suicide`, because "suicidal" appears only as a comparison with earlier months, and nothing says the writer wants to die or has a plan. The word is the cue a model is most likely to latch onto, which is why I paused. The rule looks at what the writer says they want, not at which words appear.
 
 **3.**
-> *The post:*
+> *The post:* "My Friend Is Dying. My friend swears she's going to kill herself before 21. ... She says she may start cutting herself soon. ... I'm wondering if I should send screenshots of our conversations to her mother ... I don't know what to do at this point."
 >
-> *Could have been:*
+> *Could have been:* `suicide` or `non-suicide`.
 >
-> *I chose, because:*
+> *I chose:* `non-suicide`, which matches the source label. It is full of suicide content but all of it is about the friend; the writer states no wish of their own. The dataset is inconsistent on this: "My friends mum is preventing him from getting help", also about a friend, is labelled `suicide`, and I have not changed it.
 
 ---
 
