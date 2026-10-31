@@ -165,8 +165,6 @@ correcting it silently.
 
 ## Baseline vs. Trained
 
-<!-- Baseline results from `baseline.py`. -->
-
 | Measure | Baseline |
 |---|---|
 | Overall accuracy | 0.868 |
@@ -275,55 +273,29 @@ inconsistently. I can't separate the two until I run the agreement report.
 
 ## Agreement Report
 
-<!-- Your rate against the staff set, and every disagreement adjudicated.
+**Agreement rate:** 30 / 30 = 100%
 
-     Remember you labelled these 30 under the STAFF taxonomy in
-     data/staff_taxonomy.md, not your own — so every argument below is made
-     from those definitions and those decision rules. -->
-
-**Agreement rate:** ___ / 30 = ___%
-
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
+I matched staff on every post, so there are no disagreements to adjudicate.
+Results are in `agreement_results.json`.
 
 **Disagreements**
 
-<!-- Three lines each: the post, both labels, and who you think is right and
-     why — grounded in the staff definitions you were both applying.
-
-     Then sort each into one of three piles:
-       (a) the rule covered it and I applied it loosely → a consistency problem
-       (b) the rule genuinely doesn't say               → a gap in the definitions
-       (c) the rule is ambiguous here and my reading is defensible → argue it.
-           This is a legitimate win.
-
-     Pile (a) is the one that matters most for your diagnosis: if you applied a
-     written rule two different ways on 30 posts, that is direct evidence about
-     what you did across your own 200. -->
-
-**1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
+None: 0 of 30. Nothing falls into pile (a), (b) or (c).
 
 **What the pattern in my disagreements tells me:**
-
-
+With no disagreements there is no pattern to read, so I can only say what the
+100% does and doesn't show. It does show I applied a rule I didn't write the
+same way its authors did across all 30 posts, and that rules 1 to 3 settle the
+hardest boundaries (sp_014's decorative 3% as `hot_take`, sp_010's argument
+from a measured gap as `analysis`) without needing the rule 4 tie-break. It
+does not prove my rule is genuinely tight. The staff taxonomy says several of
+these 30 were chosen as ambiguous, and a rate in the 70s was expected, so
+getting all 30 may mean the set was easier than advertised: it splits
+cleanly into three blocks of ten (10 per label), which may have made it easier.
+The honest reading is that I can follow a written decision rule consistently,
+which is good evidence for my own `suicide` / `non-suicide` rule being
+applicable the same way, but 30 posts and one rater is too little to call it
+tight.
 
 ---
 
