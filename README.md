@@ -245,29 +245,46 @@ inconsistently. I can't separate the two until I run the agreement report.
 
 ## Verdicts and Diagnoses
 
-<!-- MET or MISSED against LAST UNIT's target. The target has to hold across
-     all three seeds, not turn up sometimes. -->
-
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | >= 0.85 on every seed | MISSED | 0.895, 0.737, 0.842. Seed 42 clears it; seeds 7 and 2024 do not. |
+| 2 | Per-label F1 | both labels >= 0.80 on every seed | MISSED | Seed 7 is 0.750 (`suicide`) and 0.722 (`non-suicide`). Seed 2024's `non-suicide` is 0.824, so only seed 7 fails. |
+| 3 | `suicide` recall | >= 0.85 on every seed | MISSED | 0.947, 0.789, 0.947. Seed 7 missed 4 of 19 real `suicide` posts, against a limit of 2. |
+| 4 | Confidence | >= 0.90 correct at confidence >= 0.90, on >= 40% of posts | NOT MEASURED | `results_three_seeds_before.json` stores accuracy by confidence third, not the share of posts at 0.90 or above. Mean confidence on correct predictions was only 0.67-0.68 on every seed, so a 40% share at 0.90 looks unlikely, but I haven't measured it. |
+| 5 | Agreement with staff set | >= 24 / 30 | MET | 30 / 30 (100%). Measured once, not per seed. |
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+**Criteria 1, 2 and 3: too few examples.** The three misses share one cause,
+and the evidence is the spread. Accuracy moved 0.158 across seeds on the same
+data and settings, and the only thing that changed was which 38 posts landed
+in the test split. With 250 posts (174 for training), one test post is worth
+about 2.6 points of accuracy and about 5 points of recall. Seed 7 dropped
+recall from 0.947 to 0.789 by missing 3 more `suicide` posts, which is the
+size of change a small, hard-to-predict test split produces. The labels are
+balanced (127 / 123), so this is not a lopsided-label problem.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+**Criteria 1 and 2: a hard label pair, mostly one direction.** Where the model
+fails it leans toward `suicide`: on seed 42 it called 3 real `non-suicide`
+posts `suicide` and missed 1 the other way, and on seed 7 it was 6 against 4.
+The hard cases are posts full of suicide content that aren't about the writer
+(a friend, an ex), which my decision rule says are `non-suicide`. I can't tell
+from the saved files which posts seed 7 got wrong, so I haven't confirmed
+that these are the ones it missed.
 
+**What the agreement report tells me about labelling versus the model.** I
+matched staff on 30 / 30, so I can apply a written rule I didn't write
+consistently. That points away from sloppy application on my side. It does not
+clear the training labels: 230 of the 250 are source-dataset labels I haven't
+re-read, and I already found the source labels treat third-party posts
+inconsistently (the friend post is `non-suicide`, "My friends mum is
+preventing him from getting help" is `suicide`). So an inconsistent boundary in
+the data is still a live cause for the over-calling of `suicide`. The
+agreement report can't separate that from the model finding the pair hard.
+Re-reading the third-party posts among the 230 pre-labels is the test that
+would.
 
+**Criterion 4:** not diagnosed, because it hasn't been measured.
 
 ---
 
