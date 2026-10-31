@@ -190,32 +190,56 @@ points over bare label names.
 
 ## Run Log — Before
 
-<!-- Five criteria across three seeds. The notebook's section 6 prints the
-     spread table; the Target and Verdict columns are yours. -->
+Device: Apple Silicon GPU (MPS), torch 2.14.1, max length 128. Each seed was
+scored on its own 38-post test split (19 per label).
+
+| Measure | Seed 42 | Seed 7 | Seed 2024 | Spread |
+|---|---|---|---|---|
+| Overall accuracy | 0.895 | 0.737 | 0.842 | 0.158 |
+| Macro F1 | 0.894 | 0.736 | 0.840 | 0.158 |
+| F1 — `suicide` | 0.900 | 0.750 | 0.857 | 0.150 |
+| F1 — `non-suicide` | 0.889 | 0.722 | 0.824 | 0.167 |
+
+Accuracy moved 0.158 across seeds, more than 10 points. My dataset is too
+small for a stable measure: 250 posts leaves a 38-post test split, so one post
+is worth about 2.6 points of accuracy and the split a seed happens to draw
+changes the score a lot. The labels are balanced (127 / 123), so lopsidedness
+is not the cause. The diagnosis is size, plus noisy source labels. Seed 42's
+0.895 was a friendly draw, not the number to trust.
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | >= 0.85 on every seed | 0.895 | 0.737 | 0.842 | MISSED (seeds 7 and 2024) |
+| 2. Per-label F1 | both labels >= 0.80 on every seed | 0.900 / 0.889 | 0.750 / 0.722 | 0.857 / 0.824 | MISSED (seed 7) |
+| 3. `suicide` recall | >= 0.85 on every seed | 0.947 | 0.789 | 0.947 | MISSED (seed 7) |
+| 4. Confidence | >= 0.90 right at confidence >= 0.90, on >= 40% of posts | not measured | not measured | not measured | NOT YET MEASURED |
+| 5. Agreement with staff set | >= 24 / 30 | not run | not run | not run | NOT YET MEASURED |
+
+Criterion 4 needs per-post confidence at the 0.90 threshold, which
+`results_three_seeds_before.json` does not store; it only has thirds. The mean
+confidence on correct predictions was about 0.67 on every seed, so few posts
+likely reach 0.90. Criterion 5 is measured once with `agreement.py`, not per
+seed.
 
 ### Confusion matrix
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+Seed 42 (38 test posts):
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| true \ predicted | suicide | non-suicide |
+|---|---|---|
+| **suicide** | 18 | 1 |
+| **non-suicide** | 3 | 16 |
 
 **My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
+3 real `non-suicide` posts were called `suicide`, and only 1 real `suicide`
+post was called `non-suicide`. The model leans toward `suicide` on this pair:
+it has picked up that suicide-related content means `suicide`, but not my rule
+that the writer must be talking about themselves, so posts about a friend or
+someone else are the ones it gets wrong. The lean holds on the other seeds too
+(summed over all three seeds, 14 `non-suicide` posts were called `suicide`
+against 6 the other way). A lean in one direction can point at my labelling
+rather than the model, since the source labels treat third-party posts
+inconsistently. I can't separate the two until I run the agreement report.
 
 
 
