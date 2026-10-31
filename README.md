@@ -318,26 +318,36 @@ tight.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I added 30 `non-suicide` posts to `labels.csv` (250 → 280 rows; 157 `non-suicide` / 123 `suicide`). `non-suicide` had the worst F1 on all three seeds (0.889, 0.722, 0.824 vs 0.900, 0.750, 0.857 for `suicide`), so it is the label I treated as thinnest. By raw count it is not thinner (127 vs 123), so this was chosen on F1, not on count. About 18 of the 30 are boundary cases under my rule: the writer talks about a friend, sibling, family member, ex or a public figure's suicide or self-harm, or quotes it jokingly, but says nothing of their own wish or plan. The other 12 are ordinary or off-topic posts. The AI picked them from the unused part of `data/Suicide_Detection.csv` (source label `non-suicide`) and read each one against the rule. I did not hand-label them; their `note` column says `added-improvement (AI-labelled under README rule)`. The set is not balanced any more, which I will watch in the After run.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** Two from my Verdicts and Diagnoses: too few examples for the label that does worst, and a hard label pair where the model leans toward `suicide` (3 real `non-suicide` posts called `suicide` against 1 the other way on seed 42, 14 against 6 summed over seeds). Posts about someone else's suicide are the likeliest place for that lean, so I added them on purpose. I have not confirmed this, because the per-post errors were not saved.
 
 ### Run Log — After
 
+Same device and settings as Before. Each seed was scored on its own 42-post test split (18 `suicide`, 24 `non-suicide`) from the 280-post set, so it is not the same test set as Before. One post is about 2.4 points of accuracy. Results are in `results_three_seeds_after.json`.
+
+| Measure | Seed 42 | Seed 7 | Seed 2024 | Spread |
+|---|---|---|---|---|
+| Overall accuracy | 0.976 | 0.810 | 0.786 | 0.190 |
+| Macro F1 | 0.976 | 0.808 | 0.780 | 0.196 |
+| F1 — `suicide` | 0.973 | 0.789 | 0.743 | 0.230 |
+| F1 — `non-suicide` | 0.979 | 0.826 | 0.816 | 0.162 |
+
+Accuracy moved 0.190 across seeds, more than 10 points, and the spread got wider than Before (0.158). The diagnosis is the same: the dataset is still too small for a stable measure. 280 posts leaves a 42-post test split, and which posts a seed draws matters more than the training change. The labels are now less balanced (157 / 123), which I made worse on purpose.
+
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | >= 0.85 on every seed | 0.976 | 0.810 | 0.786 | MISSED (seeds 7 and 2024) |
+| 2. Per-label F1 | both labels >= 0.80 on every seed | 0.973 / 0.979 | 0.789 / 0.826 | 0.743 / 0.816 | MISSED (seeds 7 and 2024, on `suicide`) |
+| 3. `suicide` recall | >= 0.85 on every seed | 1.000 | 0.833 | 0.722 | MISSED (seeds 7 and 2024) |
+| 4. Confidence | >= 0.90 right at confidence >= 0.90, on >= 40% of posts | not measured | not measured | not measured | NOT YET MEASURED |
+| 5. Agreement with staff set | >= 24 / 30 | 30 / 30 (one run, not per seed) | | | MET |
 
-**Did it help, and how do I know:**
+**Did it help, and how do I know:** Partly, and I can't call it proven. What improved is the label I added to: `non-suicide` F1 went up on seed 42 (0.889 to 0.979) and seed 7 (0.722 to 0.826) and was flat on seed 2024 (0.824 to 0.816), so the mean went from 0.812 to 0.874. The lean toward `suicide` shrank: real `non-suicide` posts called `suicide` fell from 3 to 1 on seed 42, and summed over seeds there are now 10 of those against 8 the other way, where Before it was 14 against 6. Mean accuracy rose from 0.825 to 0.857.
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+What got worse: `suicide` recall fell from a mean of 0.894 to 0.852, and on seed 2024 it is 0.722 (5 of 18 `suicide` posts missed). The `suicide` F1 mean is unchanged (0.836 to 0.835). Seed 2024's accuracy dropped from 0.842 to 0.786. The model seems to have moved its boundary toward `non-suicide` rather than learning the third-party distinction cleanly. That fits adding 30 examples to only one label.
 
-
+Why I can't call it a win: the verdicts on criteria 1, 2 and 3 are the same as Before (MISSED on the weak seeds). The test split changed with the dataset, so Before and After aren't scored on the same posts. The seed-to-seed swing (0.19) is larger than the gains I'm pointing at. And the 30 added posts were labelled by the AI under my rule, not by me. The one clear result is that the extra `non-suicide` posts reduced the over-calling of `suicide` and cost some `suicide` recall.
 
 ---
 
